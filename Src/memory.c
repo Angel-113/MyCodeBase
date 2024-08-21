@@ -18,20 +18,40 @@ Arena* CreateArena ( size_t size ) {
     return arena;
 }
 
-void* ArenaAlloc ( Arena* A, size_t size ) {
+void* ArenaAlloc ( Arena* A, size_t size, Grow g ) {
+
+    void* ptr = NULL;
+
     if ( A->offset + size > A->size ) {
-        perror("This arena is not big enough");
-        return NULL;
+        switch (g) {
+            default:
+                break;
+            case STATIC:
+                perror("This arena is not big enough");
+                break;
+            case DYNAMIC:
+                A = ExtendArena(A);
+                break;
+        }
     }
-    void* ptr = A->arena + A->offset;
+
+    ptr = A->arena + A->offset;
     A->offset += size;
+
     return ptr;
+
 }
 
-void ExtendArena ( Arena* arena ) { /* This function supposes that arena has reached its maximum capacity */
-
-    /* Still thinking in how to extend an arena */
-
+Arena* ExtendArena ( Arena* arena ) { /* This function supposes that arena has reached its maximum capacity */
+    if (arena->offset >= arena->size) {
+        Arena* new_arena = CreateArena(2 * arena->size);
+        char* start = arena->arena - arena->size;
+        for (int i = 0; i < arena->size; i++) new_arena->arena[i] = start[i];
+        new_arena->offset = arena->size;
+        DestroyArena(arena);
+        return new_arena;
+    }
+    return arena;
 }
 
 void DestroyArena ( Arena* A ) {
