@@ -21,7 +21,7 @@ typedef struct Arena {
 } Arena;
 
 extern Arena* CreateArena ( size_t size );
-extern Arena* ExtendArena ( Arena* arena );
+extern Arena* ExtendArena ( Arena* arena, size_t size /* size is the last's allocation trial size */ );
 extern void* ArenaAlloc ( Arena* A, size_t size);
 extern void DestroyArena ( Arena* A );
 

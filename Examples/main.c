@@ -9,11 +9,9 @@
 
 int main ( void ) {
     Arena* memory_pool = CreateArena( 2 * sizeof(char) );
-
     printf("Memory pool dir  = %p, Memory size and offset = { %zu, %zu }\n", memory_pool->arena, memory_pool->size, memory_pool->offset );
-    char* str = ArenaAlloc(memory_pool, 11*sizeof(char));
+    memory_pool = ExtendArena(memory_pool, 2 * memory_pool->size);
     printf("Memory pool dir  = %p, Memory size and offset = { %zu, %zu }\n", memory_pool->arena, memory_pool->size, memory_pool->offset );
-    printf("str dir = %p", str);
-
+    DestroyArena(memory_pool);
     return 0;
 }
