@@ -23,6 +23,6 @@ typedef struct Arena {
 extern Arena* CreateArena ( size_t size );
 extern Arena* ExtendArena ( Arena* arena, size_t size /* size is the last's allocation trial size */ );
 extern void* ArenaAlloc ( Arena* A, size_t size);
-extern void DestroyArena ( Arena* A );
+extern void DestroyArena ( Arena* A ); /* Maybe should do something else */
 
 #endif //MYCODEBASE_MEMORY_H

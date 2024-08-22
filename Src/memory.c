@@ -44,7 +44,7 @@ Arena* ExtendArena ( Arena* arena, size_t size ) { /* This function supposes tha
         new_arena->arena++;
     }
 
-    DestroyArena(arena);
+    DestroyArena(arena); /*Is it a good idea to destroy that arena????*/
     return new_arena;
 }
 

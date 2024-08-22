@@ -12,6 +12,6 @@ int main ( void ) {
     printf("Memory pool dir  = %p, Memory size and offset = { %zu, %zu }\n", memory_pool->arena, memory_pool->size, memory_pool->offset );
     memory_pool = ExtendArena(memory_pool, 2 * memory_pool->size);
     printf("Memory pool dir  = %p, Memory size and offset = { %zu, %zu }\n", memory_pool->arena, memory_pool->size, memory_pool->offset );
-    DestroyArena(memory_pool);
+    /*DestroyArena(memory_pool);*/
     return 0;
 }
