@@ -22,7 +22,7 @@ typedef struct Arena {
 
 extern Arena* CreateArena ( size_t size );
 extern Arena* ExtendArena ( Arena* arena );
-extern void* ArenaAlloc ( Arena* A, size_t size, Grow g );
+extern void* ArenaAlloc ( Arena* A, size_t size);
 extern void DestroyArena ( Arena* A );
 
 #endif //MYCODEBASE_MEMORY_H
