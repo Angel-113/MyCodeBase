@@ -46,10 +46,10 @@ Arena* ExtendArena ( Arena* arena, const size_t size ) {
     return arena;
 }
 
-void DestroyArena ( Arena* A ) {
-    free ( A->arena );
-    A->offset = 0;
-    A->size = 0;
-    free ( A );
-    A = NULL;
+void DestroyArena ( Arena* arena ) {
+    free ( arena->arena );
+    arena->offset = 0;
+    arena->size = 0;
+    free ( arena );
+    arena = NULL;
 }

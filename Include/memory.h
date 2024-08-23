@@ -6,8 +6,6 @@
 #define MYCODEBASE_MEMORY_H
 
 #include <stdlib.h>
-#include <math.h>
-#include <string.h>
 #include <stdio.h>
 
 typedef enum Grow {

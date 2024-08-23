@@ -8,13 +8,8 @@
 #include "utilities.h"
 
 int main ( void ) {
-    Arena* memory_pool = CreateArena( 2 * sizeof(char) );
-    printf("Memory pool dir  = %p, Memory size and offset = { %zu, %zu }\n", memory_pool->arena, memory_pool->size, memory_pool->offset );
-    char* str = ArenaAlloc(memory_pool, 11* sizeof(char), STATIC);
-    printf("\nstr dir = %p\n", str);
-    str = ArenaAlloc(memory_pool, 11*sizeof(char), DYNAMIC);
-    printf("Memory pool dir  = %p, Memory size and offset = { %zu, %zu }\n", memory_pool->arena, memory_pool->size, memory_pool->offset );
-    printf("\nstr dir = %p\n", str);
-    DestroyArena(memory_pool);
+
+
+
     return 0;
 }
