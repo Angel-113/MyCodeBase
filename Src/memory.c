@@ -18,34 +18,32 @@ Arena* CreateArena ( size_t size ) {
     return arena;
 }
 
-void* ArenaAlloc ( Arena* A, size_t size) {
+void* ArenaAlloc ( Arena* arena, const size_t size, Grow g) {
     void *ptr = NULL;
-    if (A->offset + size > A->size)
-        perror("\nThis arena is not big enough !!! \nTry creating another one with greater size");
-    else {
-        ptr = A->arena + A->offset;
-        A->offset += size;
+
+    if (arena->offset + size > arena->size) {
+        switch (g) {
+            default:
+                break;
+            case STATIC:
+                printf("\nThis arena is not big enough!!!\n");
+                return ptr;
+            case DYNAMIC:
+                arena = ExtendArena(arena, 2 * (size - arena->size < 0 ? -1*(size - arena->size) : size - arena->size));
+                break;
+        }
     }
+
+    ptr = arena->arena + arena->offset;
+    arena->offset += size;
+
     return ptr;
 }
 
-Arena* ExtendArena ( Arena* arena, size_t size ) { /* This function supposes that arena has reached its maximum capacity */
-    /*
-     * I was just thinking in create another arena and to copy all the bits from the first one
-     * to the new one. Then destroy the first one and return the new one. It seems to be a problem cause
-     * memory is leaked. I'll take some time on dev a safe way to grow an arena.
-     */
-    Arena* new_arena = CreateArena(2 * arena->size + size );
-
-    /* copy what's in arena */
-    for (char* ptr = arena->arena - arena->size; ptr < arena->arena + arena->size; ptr++ ) {
-        new_arena->arena = ptr;
-        new_arena->offset++;
-        new_arena->arena++;
-    }
-
-    DestroyArena(arena); /*Is it a good idea to destroy that arena????*/
-    return new_arena;
+Arena* ExtendArena ( Arena* arena, const size_t size ) {
+    arena->arena = (char*)realloc(arena->arena, (arena->size + size) * sizeof(char));
+    arena->size += size;
+    return arena;
 }
 
 void DestroyArena ( Arena* A ) {
