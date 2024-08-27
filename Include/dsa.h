@@ -7,15 +7,9 @@
 
 #include "memory.h"
 
-#define DLLPushFront( h, n, t ) \
-    h == NULL ? \
-    log_error("You can't push front with NULL ptr"), \
-    exit(EXIT_FAILURE) : \
-    n->next = head, \
-    head = n \
-
-extern void dsa_init(void);
-extern void dsa_close(void);
+extern void dsa_init ( void );
+extern void dsa_close ( void );
+extern void check_dsa_init ( void );
 
 typedef enum Type {
     INT = 0,
@@ -26,9 +20,42 @@ typedef enum Type {
 } Type;
 
 /*
- * It's better to create from scratch an LLStruct with a struct data you want to use
- * instead of using the LLVar. That's often better for memory and execution performance.
+ * It's better to create from scratch an LLStruct with
+ * a struct data you want to use instead of using the NodeVar.
+ * That's often better for memory and execution performance.
  */
+
+#define DLLPushFront(h, n) \
+    if ((h) == NULL) {  \
+        log_error("You can't push into a NULL list"); \
+        exit(EXIT_FAILURE); \
+    } \
+    (n)->next = (h); \
+    (h)->prev = (n); \
+    (h) = (n);
+
+#define DLLPushBack(h, l, n) \
+    if ( (h) == NULL ) { \
+        log_error("You can't push into a NULL list"); \
+        exit(EXIT_FAILURE); \
+    } \
+    (l)->next = (n);  \
+    (n)->prev = (l); \
+    (l) = (n);
+
+#define DLLPopFront(h) \
+    if ( (h) == NULL ) { \
+        log_error("You can't pop from a NULL list"); \
+        exit(EXIT_FAILURE); \
+    } \
+    (h) = ((h)->next); \
+
+#define DLLPopBack(l) \
+    if ( (l) == NULL ) { \
+        log_error("You can't pop from a NULL tail"); \
+        exit(EXIT_FAILURE) \
+    } \
+    (l) = ((l)->prev);
 
 typedef struct NodeInt {
     struct NodeInt* prev;
@@ -60,14 +87,8 @@ typedef struct NodeVar {
     struct NodeVar* next;
 } NodeVar;
 
-extern void* NodeInit ( void* data, Type t );
+extern void* NodeInit( void* data, Type t );
 
-typedef struct DLL {
-    void* head;
-    void* tail;
-    size_t size;
-} DLL;
-
-extern DLL* DLLInit( void* data, Type t );
+extern void PrintList ( void* head, Type t );
 
 #endif //MYCODEBASE_DSA_H

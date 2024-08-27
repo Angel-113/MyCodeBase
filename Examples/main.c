@@ -8,7 +8,12 @@
 #include "utilities.h"
 
 int main ( void ) {
+    int n = 9;
     dsa_init();
-    DLL* list = DLLInit();
+    NodeInt* h = NodeInit(&n, INT);
+    NodeInt* n1 = NodeInit(&n, INT);
+    DLLPushFront(h, n1);
+    DLLPushBack(h, n1, n1); 
+    PrintList(h, INT);
     return 0;
 }
