@@ -8,8 +8,7 @@
 #include "utilities.h"
 
 int main ( void ) {
-
-
-
+    dsa_init();
+    DLL* list = DLLInit();
     return 0;
 }

@@ -21,4 +21,6 @@ add_executable(example Examples/main.c
         Src/memory.c
         Src/utilities.c
         Src/dsa.c
+        Include/base.h
+        Src/base.c
 )

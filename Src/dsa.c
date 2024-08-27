@@ -3,83 +3,57 @@
 //
 
 #include "dsa.h"
-/* Node Implementations */
-static void* InitNode ( void* node, void* data, Type t );
-static void InitNodeInt ( NodeInt* node, int data );
-static void InitNodeFloat ( NodeFloat* node, float data );
-static void InitNodeDouble ( NodeDouble* node, double data );
-static void InitNodeString ( NodeString* node, char* data );
-static void InitNodeVar ( NodeVar* node, void* data );
-static void PrintNode ( void* node, Type t );
 
-static void* InitNode ( void* node, void* data, const Type t ) {
+static Arena *memory_pool = NULL;
+
+static size_t NodeSize(const Type t);
+static void AuxInitNode ( void* data, void* node, Type t );
+
+void dsa_init ( void ) { memory_pool = memory_pool == NULL ? CreateArena(512) : memory_pool; }
+void dsa_close ( void ) { DestroyArena(memory_pool); }
+
+DLL* DLLInit ( void* data, const Type t ) {
+    if ( memory_pool == NULL ) {
+        log_error("DSA not initialized");
+        exit(EXIT_FAILURE);
+    }
+
+    DLL* dll = ArenaAlloc(memory_pool, sizeof(DLL), DYNAMIC);
+    dll->head = dll->tail = NodeInit(data,t );
+    dll->size += 1;
+
+    return dll;
+}
+
+
+
+void* NodeInit ( void* data, const Type t ) {
+    void* ptr = NULL;
+    ptr = ArenaAlloc(memory_pool, NodeSize(t), DYNAMIC);
+
+    return ptr;
+}
+
+static size_t NodeSize(const Type t) {
+    size_t size = 0;
     switch (t) {
-        default:break;
+        default:
+            break;
         case INT:
-            InitNodeInt(node, *((int*)data));
+            size = sizeof(NodeInt);
         break;
         case FLOAT:
-            InitNodeFloat(node, *((float*)data));
-        break;
-        case DOUBLE:
-            InitNodeDouble(node, *((double*)data));
+            size = sizeof(NodeFloat);
         break;
         case STRING:
-            InitNodeString(node, (char*)data);
+            size = sizeof(NodeString);
+        break;
+        case DOUBLE:
+            size = sizeof(NodeDouble);
         break;
         case VAR:
-            InitNodeVar(node, data);
+            size = sizeof(NodeVar);
         break;
     }
-    return node;
-}
-
-static void InitNodeInt ( NodeInt* node, const int data ) {
-    node->data = data;
-    node->next = NULL;
-    node->prev = NULL;
-}
-
-static void InitNodeFloat ( NodeFloat* node, const float data ) {
-    node->data = data;
-    node->next = NULL;
-    node->prev = NULL;
-}
-
-static void InitNodeDouble ( NodeDouble* node, const double data ) {
-    node->data = data;
-    node->next = NULL;
-    node->prev = NULL;
-}
-
-static void InitNodeString ( NodeString* node, char* data ) {
-    node->data = data;
-    node->next = NULL;
-    node->prev = NULL;
-}
-
-static void InitNodeVar ( NodeVar* node, void* data ) {
-    node->data = data;
-    node->next = NULL;
-    node->prev = NULL;
-}
-
-static void PrintNode ( void* node, Type t ) {
-
-}
-
-/* Linked List Implementations */
-LL* InitList ( void* data, const Type t ) {
-    LL* list = malloc(sizeof(LL));
-
-    list->memory_pool = CreateArena(10 * sizeof(NodeVar));
-    list->head = ArenaAlloc(list->memory_pool, sizeof(NodeVar), DYNAMIC);
-    list->head = InitNode(list->head, data, t);
-    list->size += 1;
-    list->type = t;
-
-    const NodeVar* tmp = list->head;
-    list->tail = tmp->next;
-
-    return list;
+    return size;
 }

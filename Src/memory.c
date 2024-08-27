@@ -4,33 +4,27 @@
 
 #include "memory.h"
 
-Arena* CreateArena ( size_t size ) {
-    Arena* arena = (Arena*) malloc(sizeof(Arena));
-    if ( arena != NULL ) {
-        arena->arena = (char *) malloc(size);
-        if ( arena->arena == NULL ) {
-            perror("Error when creating Arena\n");
-            return NULL;
-        }
-        arena->size = size;
-        arena->offset = 0;
-    }
+Arena* CreateArena ( const size_t size ) {
+    Arena* arena = safe_malloc(sizeof(Arena));
+    arena->arena = (byte *) safe_malloc(size);
+    arena->size = size;
+    arena->offset = 0;
     return arena;
 }
 
 void* ArenaAlloc ( Arena* arena, const size_t size, Grow g) {
     void *ptr = NULL;
 
-    if (arena->offset + size > arena->size) {
+    if (arena->offset + size > arena->size && size != 0) {
         switch (g) {
             default:
                 break;
             case STATIC:
-                printf("\nThis arena is not big enough!!!\n");
+                log_error("This arena is not big enough !!! ");
                 return ptr;
             case DYNAMIC:
-                arena = ExtendArena(arena, 2 * (size - arena->size < 0 ? -1*(size - arena->size) : size - arena->size));
-                break;
+                ExtendArena(arena, 2 * size);
+            break;
         }
     }
 
@@ -40,16 +34,15 @@ void* ArenaAlloc ( Arena* arena, const size_t size, Grow g) {
     return ptr;
 }
 
-Arena* ExtendArena ( Arena* arena, const size_t size ) {
-    arena->arena = (char*)realloc(arena->arena, (arena->size + size) * sizeof(char));
+void ExtendArena ( Arena* arena, const size_t size ) {
+    arena->arena = (byte*) safe_realloc(arena->arena, (arena->size + size) * sizeof(byte));
     arena->size += size;
-    return arena;
 }
 
 void DestroyArena ( Arena* arena ) {
-    free ( arena->arena );
+    safe_free ( arena->arena );
     arena->offset = 0;
     arena->size = 0;
-    free ( arena );
+    safe_free ( arena );
     arena = NULL;
 }

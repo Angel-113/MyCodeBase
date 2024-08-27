@@ -7,6 +7,16 @@
 
 #include "memory.h"
 
+#define DLLPushFront( h, n, t ) \
+    h == NULL ? \
+    log_error("You can't push front with NULL ptr"), \
+    exit(EXIT_FAILURE) : \
+    n->next = head, \
+    head = n \
+
+extern void dsa_init(void);
+extern void dsa_close(void);
+
 typedef enum Type {
     INT = 0,
     FLOAT = 1,
@@ -50,28 +60,14 @@ typedef struct NodeVar {
     struct NodeVar* next;
 } NodeVar;
 
-typedef struct LL {
-    Arena* memory_pool;
+extern void* NodeInit ( void* data, Type t );
+
+typedef struct DLL {
     void* head;
-    Type type;
-    size_t size;
     void* tail;
-} LL;
-
-typedef struct CLL {
-    Arena* memory_pool;
-    void* head;
-    Type type;
     size_t size;
-} CLL;
+} DLL;
 
-/* Linked List Functions */
-extern LL* InitList ( void* data, Type t ); /* Init Linked List */
-extern void AddNode ( LL* list, void* data ); /* Add node to head */
-extern void RemoveNode ( void* Tail, void* data, Type t ); /* Remove node to tail */
-extern void* GetLastNode (void* Tail); /* Return ptr to last node */
-
-/* Circular Linked List Functions */
-
+extern DLL* DLLInit( void* data, Type t );
 
 #endif //MYCODEBASE_DSA_H
