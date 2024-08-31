@@ -12,6 +12,15 @@
 #define to_string(expr) #expr
 
 typedef unsigned char byte;
+typedef unsigned long long int uint128;
+typedef unsigned long int uint64;
+typedef unsigned int uint32;
+typedef unsigned short uint16;
+typedef unsigned char uint8;
+typedef char int8;
+typedef short int int16;
+typedef long int int32;
+typedef long long int int64;
 
 extern void* safe_malloc ( size_t size );
 extern void* safe_realloc ( void* ptr, size_t size );
