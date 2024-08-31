@@ -3,22 +3,16 @@
 #include <stdio.h>
 #include "dsa.h"
 
+include_dsa();
+
 int main ( void ) {
-
-	dsa_init();
-
-	DLL* list = InitDLL(NULL);
-
-	for ( int i = 0; i < 100; i++ ) {
-		int n = i + 1;
-		DLLPushBack(list, &n);
-	}
-
-	DLLPrint(list);
-
-	for ( int i = 0; i < 100; i++ ) DLLPopBack(list);
-
-	DLLPrint(list);
-
+	DLLint* list = InitDLLint(4);
+	PrintDLLint(list);
+	PushFrontDLLint(list, 5);
+	PrintDLLint(list);
+	PushBackDLLint(list, 6);
+	PrintDLLint(list);
+	PushBackDLLint(list, 7);
+	PrintDLLint(list);
     return 0;
 }
