@@ -3,16 +3,42 @@
 #include <stdio.h>
 #include "dsa.h"
 
-include_dsa();
+typedef struct box {
+	float x;
+	float y;
+	unsigned int height;
+	unsigned int width;
+} box;
+
+NEW_ST_DSA(box);
 
 int main ( void ) {
-	DLLint* list = InitDLLint(4);
-	PrintDLLint(list);
-	PushFrontDLLint(list, 5);
-	PrintDLLint(list);
-	PushBackDLLint(list, 6);
-	PrintDLLint(list);
-	PushBackDLLint(list, 7);
-	PrintDLLint(list);
+	DLLint *List = InitDLLint(4);
+	DLLPushFront(List, int, 5);
+
+	Nodeint* tmp = List->head;
+	while ( tmp != NULL ) {
+		printf("%d\n", tmp->data);
+		tmp = tmp->next;
+	}
+	DLLPushBack(List, int, 3);
+	tmp = List->head;
+	while ( tmp != NULL ) {
+		printf("%d\n", tmp->data);
+		tmp = tmp->next;
+	}
+
+	DLLPopBack(List);
+	DLLPopFront(List);
+
+	tmp = List->head;
+	while ( tmp != NULL ) {
+		printf("%d\n", tmp->data);
+		tmp = tmp->next;
+	}
+
+	DLLPopBack(List);
+	DLLPopFront(List);
+
     return 0;
 }
