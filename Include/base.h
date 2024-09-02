@@ -22,6 +22,9 @@ typedef short int int16;
 typedef long int int32;
 typedef long long int int64;
 
+typedef char* string;
+typedef void* object; /* ----> When using it as a pointer to any type or any struct */
+
 extern void* safe_malloc ( size_t size );
 extern void* safe_realloc ( void* ptr, size_t size );
 extern void safe_free ( void* ptr );
