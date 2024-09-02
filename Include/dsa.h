@@ -63,7 +63,7 @@
 
 /*
  * @author: Angel Castillo @date: 30/08/2024
- * Every Node like struct has three members:
+ * Every Node-like struct has three members:
  *
  *  - prev
  *  - data
@@ -107,7 +107,7 @@
 /*
  * @author: Angel Castillo @date: 30/08/2024
  *
- * DLL stands for Double Linked List. Every DLL like struct has four member:
+ * DLL stands for Double Linked List. Every DLL-like struct has 5 members:
  * - mem : a memory pool to store every node
  * - head : top of the list
  * - tail: bottom of the list
@@ -181,7 +181,7 @@
 /*
  * @author: Angel Castillo @date: 30/08/2024
  *
- *  Every Stack like struct has 3 members:
+ *  Every Stack-like struct has 3 members:
  *  - head: top of the stack
  *  - size: how many nodes are in the stack
  *  - tmp: an auxiliary ptr
