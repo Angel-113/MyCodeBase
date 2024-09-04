@@ -22,10 +22,12 @@
 /* Here Tmp has to be a node that always points to the original head other ways behaviour is not how is expected to be */
 #define PushBack( Tail, Node, Tmp ) \
 	if ( (Tail) == NULL ) { \
-		((Node)->prev) = (Tmp); \
-		((Tmp)->next) = (Node); \
+		if ((Tmp) != NULL) { \
+			((Node)->prev) = (Tmp); \
+			((Tmp)->next) = (Node); \
+		} \
 		(Tail) = (Node); \
-	} \
+	}\
 	else { \
 		((Tail)->next) = (Node); \
 		((Node)->prev) = (Tail); \
@@ -269,9 +271,39 @@
 	static inline Queue##type* InitQueue##type ( type data ) { \
 		Queue##type* q = safe_malloc(sizeof(Queue##type));\
 		q->head = q->tail = InitNode##type(data); \
-		q->tmp = q->tail; \
+		q->tmp = q->head; \
 		q->size = 1; \
 		return q; \
+	} \
+
+#define QueuePush(Queue, type, data) \
+	if ((Queue) != NULL) { \
+		Node##type* node = InitNode##type(data); \
+		PushBack( ((Queue)->tail), (node), ((Queue)->tmp) ); \
+		((Queue)->tail) = (node); \
+		if (((Queue)->head) == NULL) { ((Queue)->tmp) = ((Queue)->head) = ((Queue)->tail); }\
+		((Queue)->size)++; \
+	} \
+
+#define QueuePop(Queue) \
+	if ((Queue) != NULL) {\
+		if (((Queue)->size) == 1) { ((Queue)->tmp) = ((Queue)->head) = ((Queue)->tail) = NULL;  } \
+		else { \
+			void* tmp = (((Queue)->head)->next); \
+			PopFront(((Queue)->head), 1); \
+			((Queue)->head) = tmp; \
+			((Queue)->tmp) = ((Queue)->head); \
+			((Queue)->size)--; \
+		}\
+	}
+
+#define QueuePrint(Queue) \
+	if ((Queue) != NULL) { \
+		while (((Queue)->tmp) != NULL) { \
+			printf("{%p}\n", ((Queue)->tmp)); \
+			((Queue)->tmp) = (((Queue)->tmp)->next); \
+		} \
+		((Queue)->tmp) = ((Queue)->head); \
 	} \
 
 #define NEW_ST_DSA(type) \

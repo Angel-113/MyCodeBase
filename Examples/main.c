@@ -12,33 +12,36 @@ typedef struct box {
 
 NEW_ST_DSA(box);
 
+void PrintQueueint(Nodeint* head) {
+	while (head) {
+		printf("{%d} \n", head->data);
+		head = head->next;
+	}
+	printf("\n");
+}
+
 int main ( void ) {
-	DLLint *List = InitDLLint(4);
-	DLLPushFront(List, int, 5);
 
-	Nodeint* tmp = List->head;
-	while ( tmp != NULL ) {
-		printf("%d\n", tmp->data);
-		tmp = tmp->next;
-	}
-	DLLPushBack(List, int, 3);
-	tmp = List->head;
-	while ( tmp != NULL ) {
-		printf("%d\n", tmp->data);
-		tmp = tmp->next;
-	}
+	Queueint* q = InitQueueint(4);
+	QueuePush(q, int, 5);
+	QueuePush(q, int, 6);
 
-	DLLPopBack(List);
-	DLLPopFront(List);
+	PrintQueueint(q->tmp);
 
-	tmp = List->head;
-	while ( tmp != NULL ) {
-		printf("%d\n", tmp->data);
-		tmp = tmp->next;
-	}
+	QueuePop(q);
+	QueuePop(q);
+	QueuePop(q);
 
-	DLLPopBack(List);
-	DLLPopFront(List);
+	PrintQueueint(q->tmp);
+
+	QueuePush(q, int, 4);
+
+	PrintQueueint(q->tmp);
+
+	QueuePush(q, int, 7);
+
+	PrintQueueint(q->tmp);
 
     return 0;
+
 }
