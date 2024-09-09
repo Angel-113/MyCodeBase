@@ -30,7 +30,15 @@ void* ArenaAlloc ( Arena* arena, const size_t size, Grow g) {
 
     ptr = arena->arena + arena->offset;
     arena->offset += size;
+    arena->size += (size_t) (size / sizeof(byte));
 
+    return ptr;
+}
+
+void* ArenaDeAlloc ( Arena* arena, size_t size ) {
+    void* ptr = arena->arena - size;
+    arena->offset -= size;
+    arena->size -= (size_t)(size / sizeof(byte));
     return ptr;
 }
 

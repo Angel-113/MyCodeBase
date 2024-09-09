@@ -3,45 +3,33 @@
 #include <stdio.h>
 #include "dsa.h"
 
-typedef struct box {
-	float x;
-	float y;
-	unsigned int height;
-	unsigned int width;
-} box;
-
-NEW_ST_DSA(box);
-
-void PrintQueueint(Nodeint* head) {
-	while (head) {
-		printf("{%d} \n", head->data);
-		head = head->next;
-	}
-	printf("\n");
+void PrintVectorInfo ( Vectorstring* v ) {
+    printf("size = %llu \n"
+           "offset = %llu \n"
+           "array ptr = %p\n", v->size, v->offset, v->array);
 }
 
 int main ( void ) {
+    Vectorstring* v = InitVectorstring("Hello world\n", 0);
+    VectorPush(v, "I'm Angel\n");
+    VectorPush(v, "I'm studying computer science\n");
+    VectorPush(v, "My lastname is Castillo\n");
+    PrintVectorInfo(v);
 
-	Queueint* q = InitQueueint(4);
-	QueuePush(q, int, 5);
-	QueuePush(q, int, 6);
+    for ( uint128 i = v->size; i < 20; i++ )
+           VectorPush(v, "0\n");
 
-	PrintQueueint(q->tmp);
+    VectorPush(v, "Hello there!\n")
 
-	QueuePop(q);
-	QueuePop(q);
-	QueuePop(q);
+    for ( int i = 0; i < v->size; i++ ) printf("%s", v->array[i]);
 
-	PrintQueueint(q->tmp);
+    printf("%s", VectorGet(v, 23, string));
 
-	QueuePush(q, int, 4);
+    VectorPop(v, string)
 
-	PrintQueueint(q->tmp);
+    for ( int i = 0; i < v->size; i++ ) printf("%s", VectorGet(v, i, string));
 
-	QueuePush(q, int, 7);
-
-	PrintQueueint(q->tmp);
+    PrintVectorInfo(v);
 
     return 0;
-
 }

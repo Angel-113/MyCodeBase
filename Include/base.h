@@ -7,9 +7,13 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <assert.h>
 
 #define to_string(expr) #expr
+
+#define ThreeCompare(A, B, Z) if ( ((A) <= (B)) && ((B) <= (Z)) )
+
 
 typedef unsigned char byte;
 typedef unsigned long long int uint128;
