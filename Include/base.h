@@ -14,6 +14,9 @@
 
 #define ThreeCompare(A, B, Z) if ( ((A) <= (B)) && ((B) <= (Z)) )
 
+#define copy_string( s1, s2 ) \
+    if ( (s1) != NULL && (s2) != NULL ) \
+        (s1) = (s2);
 
 typedef unsigned char byte;
 typedef unsigned long long int uint128;

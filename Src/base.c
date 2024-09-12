@@ -16,7 +16,7 @@ void* safe_malloc ( const size_t size ) {
     return ptr;
 }
 
-void safe_free ( void* ptr ) { ptr != NULL ? free(ptr) : NULL; }
+void safe_free ( void* ptr ) { ptr != NULL ? free(ptr) : log_error("ptr is NULL"); }
 
 void* safe_realloc ( void* ptr, const size_t size ) {
     void* tmp = ptr;
