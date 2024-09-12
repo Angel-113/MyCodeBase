@@ -1,35 +1,19 @@
 // Created by angel on 19/08/24.
 
 #include <stdio.h>
-#include "dsa.h"
+#include "ds.h"
+#include "adv_ds.h"
 
-void PrintVectorInfo ( Vectorstring* v ) {
-    printf("size = %llu \n"
-           "offset = %llu \n"
-           "array ptr = %p\n", v->size, v->offset, v->array);
-}
+int main (void ) {
 
-int main ( void ) {
-    Vectorstring* v = InitVectorstring("Hello world\n", 0);
-    VectorPush(v, "I'm Angel\n");
-    VectorPush(v, "I'm studying computer science\n");
-    VectorPush(v, "My lastname is Castillo\n");
-    PrintVectorInfo(v);
+    DLLint* list = InitDLLint(4);
 
-    for ( uint128 i = v->size; i < 20; i++ )
-           VectorPush(v, "0\n");
+    DLLPushBack(list, int, 5)
 
-    VectorPush(v, "Hello there!\n")
-
-    for ( int i = 0; i < v->size; i++ ) printf("%s", v->array[i]);
-
-    printf("%s", VectorGet(v, 23, string));
-
-    VectorPop(v, string)
-
-    for ( int i = 0; i < v->size; i++ ) printf("%s", VectorGet(v, i, string));
-
-    PrintVectorInfo(v);
+    while ( list->tmp != NULL ) {
+        printNode(list->tmp)
+        list->tmp = list->tmp->next;
+    }
 
     return 0;
 }
