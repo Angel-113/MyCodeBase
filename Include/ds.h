@@ -7,17 +7,43 @@
  *  - Double Linked List (DLL)
  *  - Stack (Single Linked List)
  *  - Queue (Single Linked List)
- *  - Circular Double Linked List (CDLL)
+ *  - Vector (Dynamic Size Array)
  *
  * Every struct is going to have an explanation for every struct member.
  *
  */
 
-#ifndef MYCODEBASE_DSA_H
-#define MYCODEBASE_DSA_H
+/*
+ * TODO: Angel Castillo { FIXME: -> Type declarations inside macros -> Print data }
+ *
+ *
+ * */
+
+#ifndef MYCODEBASE_DS_H
+#define MYCODEBASE_DS_H
 
 #include "memory.h"
 #include <stdbool.h>
+
+#define print( data ) _Generic((data), \
+    int: printf( "%d", data ), \
+    float: printf( "%f", data ), \
+    double: printf("%f", data), \
+    char: printf("%c", data), \
+    char*: printf("%s", data),   \
+    void*: printf("%p", data),\
+    default: printf("WTF?\n") \
+);
+
+#define printNode( Node ) _Generic((Node->data), \
+    int: printf( "->{ %d }<-", ((Node)->data) ),    \
+    float: printf( "->{ %f }<-", ((Node)->data) ),   \
+    double: printf( "->{ %f }<-", ((Node)->data) ),  \
+    char: printf( "->{ %c }<-", ((Node)->data) ),    \
+    char*: printf( "->{ %s }<-", ((Node)->data) ),  \
+    void*: printf( "->{ %p } <-", ((Node)->data) ),   \
+    default: printf("Data is not a primary type\n") \
+);
 
 /* Here Tmp has to be a node that always points to the original head other ways behaviour is not how is expected to be */
 #define PushBack( Tail, Node, Tmp ) \
@@ -103,7 +129,7 @@
 	} \
 	\
 	static inline void PrintNode##type ( Node##type* node ) {\
-		printf( "->{ %p }<-", node ); \
+		printNode(node) \
 	}
 
 /*
@@ -155,12 +181,16 @@
 		((DLL)->size)++;\
 	} \
 
+#define DLLGetNode( DLL, index, ptr ) \
+        while ( (DLL) != NULL && ((DLL)->tmp) != NULL && index-- ) (tmp) = ((tmp)->next); \
+        (ptr) = (void *)(tmp); \
+        (tmp) = ((DLL)->head); \
+
 #define DLLPopFront( DLL ) \
 	if ( ((DLL) != NULL) && (((DLL)->head) != NULL) ) {\
 		if (((DLL)->size) == 1) ((DLL)->head) = ((DLL)->tail) = NULL; \
 		else PopFront(((DLL)->head), 0);                  \
-		((DLL)->size)--;         \
-        ArenaDeAlloc(((DLL)->mem), sizeof(*((DLL)->head)));\
+		((DLL)->size)--; \
 	}\
 
 #define DLLPopBack( DLL ) \
@@ -168,7 +198,6 @@
 		if (((DLL)->size) == 1) ((DLL)->head) = ((DLL)->tail) = NULL; \
 		else PopBack(((DLL)->tail), 0); \
 		((DLL)->size)--;        \
-        ArenaDeAlloc(((DLL)->mem), sizeof(*((DLL)->head)));\
 	} \
 
 /* Warning, you're freeing the entire DLL */
@@ -207,7 +236,7 @@
 		return s;\
 	}\
 
-#define IsStackEmpty(Stack) (Stack)->size == 0;
+#define IsStackEmpty(Stack) (bool)((Stack)->size == 0)
 
 #define StackPush( Stack, type, data ) \
 	if ( (Stack) != NULL ) { \
@@ -234,11 +263,15 @@
 #define StackPrint( Stack ) \
 	if ( (Stack) != NULL ) { \
 		while ( ((Stack)->tmp) != NULL ) { \
-			printf("{ %p }\n", ((Stack)->tmp)); \
+			printNode(((Stack)->tmp)); \
 			((Stack)->tmp) = (((Stack)->tmp)->next); \
 		} \
 		((Stack)->tmp) = ((Stack)->head); \
 	} \
+
+#define StackHeadData( Stack, type ) (type)(((Stack)->head)->data);
+
+#define StackHead( Stack ) (void*)((Stack)->head)
 
 #define CloseStack( Stack, type ) \
 	if ( (Stack) != NULL ) { \
@@ -301,23 +334,29 @@
 #define QueuePrint(Queue) \
 	if ((Queue) != NULL) { \
 		while (((Queue)->tmp) != NULL) { \
-			printf("{%p}\n", ((Queue)->tmp)); \
+			printNode(((Queue)->tmp)); \
 			((Queue)->tmp) = (((Queue)->tmp)->next); \
 		} \
 		((Queue)->tmp) = ((Queue)->head); \
 	} \
 
 /*
- * In Vector-like struct size and offset play the same
- * roles that play in an Arena-like struct. While size
- * is the number of used memory cells, the offset is
- * the total number of usable memory cells.
+ * @author: Angel Castillo @date: 09/09/2024
+ *
+ * Every Vector-like struct has 4 members:
+ *
+ * - array: a ptr to the firs element of the array
+ * - size: used memory cells of the array
+ * - current_last: last array concurrent element's index
+ * - offset: usable memory cells of the array
+ *
  */
 
 #define VECTOR(type) \
     typedef struct Vector##type { \
         type* array; \
-        uint128 size; \
+        uint128 size;\
+        uint128 current_last; \
         uint128 offset; \
     } Vector##type;  \
     \
@@ -326,28 +365,45 @@
         v->array = size == 0 || size < 0 ? safe_malloc( 10 * sizeof(type) ) : safe_malloc( size * sizeof(type) ); \
         v->offset = size == 0 || size < 0 ? 10 : size;  \
         v->array[0] = data; \
-        v->size = 1;  \
+        v->size = 1; \
+        v->current_last = 0; \
         return v; \
     }
 
 #define VectorPush( Vector, data ) \
     if ((Vector) != NULL) {        \
-        if ( ((Vector)->size) < ((Vector)->offset) - 1 ) \
-            ((Vector)->array[((Vector)->size)]) = data; \
+        if ( ((Vector)->current_last) < ((Vector)->offset) - 1 ) \
+            ((Vector)->array[((Vector)->current_last++)]) = data; \
         else {                     \
             ((Vector)->array) = safe_realloc( ((Vector)->array), ((Vector)->offset) * 2 * sizeof(((Vector)->array[0]) )); \
             ((Vector)->offset) *= 2;                         \
-            ((Vector)->array[((Vector)->size)]) = data; \
+            ((Vector)->array[((Vector)->current_last++)]) = data; \
         }                          \
         ((Vector)->size)++; \
     }
+
+#define VectorPushAtIndex( Vector, index, data ) \
+    if ( (Vector) != NULL ) {                    \
+         \
+    }\
 
 #define VectorGet( Vector, index, type ) (type)((Vector)->array[index < 0 || index > ((Vector)->size) ? 0 : index]) \
 
 #define VectorPop( Vector, type ) \
     if ( (Vector) != NULL ) { \
-        ((Vector)->array[((Vector)->size)]) = (type){0}; \
-        ((Vector)->size)--;            \
+        ((Vector)->array[((Vector)->current_last)]) = (type){0}; \
+        ((Vector)->size)--;       \
+        ((Vector)->current_last)--; \
+    }
+
+#define VectorFree( Vector, type ) \
+    if ( (Vector) != NULL ) {      \
+       if ( ((Vector)->size) > 1 ) for ( uint128 i = 0; i < ((Vector)->size); i++ ) ((Vector)->array[i]) = (type){0};  \
+       else ((Vector)->array[0]) = (type){0};                                                                          \
+       ((Vector)->size) = 0; \
+       ((Vector)->offset) = 0; \
+       safe_free(((Vector)->array)); \
+       safe_free((Vector)); \
     }
 
 #define NEW_ST_DSA(type) \
@@ -357,12 +413,12 @@
 	QUEUE(type); \
     VECTOR(type);
 
-NEW_ST_DSA(int);
-NEW_ST_DSA(float);
-NEW_ST_DSA(double);
-NEW_ST_DSA(bool);
-NEW_ST_DSA(char);
-NEW_ST_DSA(string);
+NEW_ST_DSA(int)
+NEW_ST_DSA(float)
+NEW_ST_DSA(double)
+NEW_ST_DSA(bool)
+NEW_ST_DSA(char)
+NEW_ST_DSA(string)
 NEW_ST_DSA(object)
 
-#endif //MYCODEBASE_DSA_H
+#endif //MYCODEBASE_DS_H
