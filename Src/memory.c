@@ -35,7 +35,7 @@ void* ArenaAlloc ( Arena* arena, const size_t size, Grow g) {
     return ptr;
 }
 
-void* ArenaDeAlloc ( Arena* arena, size_t size ) {
+void* ArenaDeAlloc ( Arena* arena, size_t size ) { /* Wrong -> I'm "deleting" and letting to use the chunk of size to future allocations in the memory */
     void* ptr = arena->arena - size;
     arena->offset -= size;
     arena->size -= (size_t)(size / sizeof(byte));

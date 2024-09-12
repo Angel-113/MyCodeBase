@@ -7,6 +7,11 @@
 
 #include "base.h"
 
+/*
+ * TODO: Angel Castillo
+ * FIXME: Make a non-linear allocator to push and could manage freeing memory.
+*/
+
 typedef enum Grow {
     DYNAMIC = 1,
     STATIC = 0
@@ -21,7 +26,6 @@ typedef struct Arena {
 extern Arena* CreateArena ( size_t size ); /* Creates an Arena struct ptr which has a byte* arena of size 'size' */
 extern void ExtendArena ( Arena* arena, size_t size); /* This functions re-allocate arena->arena ptr to a ptr with double size */
 extern void* ArenaAlloc ( Arena* arena, size_t size, Grow g); /* Allocate size bits and return a ptr to arena->arena + arena->offset */
-extern void* ArenaDeAlloc ( Arena* arena, size_t size ); /* Just subtracts size from offset and returns the resultant ptr */
 extern void DestroyArena ( Arena* arena ); /* Frees arena struct ptr and arena->arena */
 
 #endif //MYCODEBASE_MEMORY_H
