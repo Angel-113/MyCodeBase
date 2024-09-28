@@ -23,6 +23,7 @@
 #define MYCODEBASE_DS_H
 
 #include "memory.h"
+#include "base.h"
 #include <stdbool.h>
 
 #define print( data ) _Generic((data), \
@@ -77,7 +78,7 @@
 	else { \
 		(Head) = ((Head)->next); \
 		((Head)->prev) = NULL; \
-	}\
+	} \
 
 #define PopBack( Tail, Freed ) \
 	if ( (Freed) ) { \
@@ -87,7 +88,7 @@
 	else { \
 		(Tail) = ((Tail)->prev); \
 		((Tail)->next) = NULL; \
-	}\
+	} \
 
 /*
  * @author: Angel Castillo @date: 30/08/2024
@@ -118,15 +119,6 @@
 		return node; \
 	}\
 	\
-	static inline Node##type* InitNodeList##type ( Arena* mem, type data ) { \
-		assert( mem != NULL ); \
-		Node##type* node = (Node##type*) ArenaAlloc(mem, sizeof(Node##type), DYNAMIC); \
-		assert(node != NULL); \
-		node->next = NULL; \
-		node->prev = NULL; \
-		node->data = data; \
-		return node; \
-	} \
 	\
 	static inline void PrintNode##type ( Node##type* node ) {\
 		printNode(node) \
@@ -135,8 +127,7 @@
 /*
  * @author: Angel Castillo @date: 30/08/2024
  *
- * DLL stands for Double Linked List. Every DLL-like struct has 5 members:
- * - mem : a memory pool to store every node
+ * DLL stands for Double Linked List. Every DLL-like struct has 4 members:
  * - head : top of the list
  * - tail: bottom of the list
  * - tmp: pointer, always points to original head
@@ -146,7 +137,6 @@
 
 #define DLL_INIT( type ) \
 	typedef struct DLL##type { \
-		Arena* mem; \
 		Node##type* head; \
 		Node##type* tail; \
 		Node##type* tmp; \
@@ -155,8 +145,7 @@
 	\
 	static inline DLL##type* InitDLL##type ( type data ) { \
 		DLL##type* dll = safe_malloc(sizeof(DLL##type)); \
-		dll->mem = CreateArena( 10 * sizeof(Node##type) ); \
-		dll->head = InitNodeList##type(dll->mem, data); \
+		dll->head = InitNode##type((data)); \
 		dll->head->next = dll->tail; \
 		dll->tail = NULL; \
 		dll->tmp = dll->head; \
@@ -167,7 +156,7 @@
 
 #define DLLPushFront( DLL, type, data ) \
 	if ( (DLL) != NULL ) { \
-		Node##type* node = InitNodeList##type(((DLL)->mem), (data)); \
+		Node##type* node = InitNode##type((data)); \
 		PushFront(((DLL)->head), node); \
 		((DLL)->head) = (node); \
 		((DLL)->size)++;  \
@@ -175,7 +164,7 @@
 
 #define DLLPushBack( DLL, type, data ) \
 	if ( (DLL) != NULL ) { \
-		Node##type* node = InitNodeList##type(((DLL)->mem), data); \
+		Node##type* node = InitNode##type((data)); \
 		PushBack(((DLL)->tail), node, ((DLL)->tmp)); \
 		((DLL)->tail) = (node);\
 		((DLL)->size)++;\
@@ -191,7 +180,7 @@
 		if (((DLL)->size) == 1) ((DLL)->head) = ((DLL)->tail) = NULL; \
 		else PopFront(((DLL)->head), 0);                  \
 		((DLL)->size)--; \
-	}\
+	} \
 
 #define DLLPopBack( DLL ) \
 	if (((DLL) != NULL) && (((DLL)->tail) != NULL)) { \
@@ -200,13 +189,22 @@
 		((DLL)->size)--;        \
 	} \
 
+#define DLLPrint( DLL ) \
+    printf("List(%zu) : \n", ((DLL)->size)); \
+    typeof(((DLL)->head)) node = ((DLL)->head); \
+    while ( node != NULL ) { \
+        printNode( node ) \
+        node = node->next; \
+    }                   \
+    printf("\n"); \
+
 /* Warning, you're freeing the entire DLL */
 #define CloseDLL(DLL) \
 	if ((DLL) != NULL) { \
+        /* Still got to implement freeing all nodes */\
 		((DLL)->head) = NULL; \
 		((DLL)->tail) = NULL; \
 		((DLL)->tmp) = NULL; \
-		DestroyArena(((DLL)->mem)); \
 		((DLL)->size) = 0; \
 		safe_free((DLL)); \
 	}
@@ -355,9 +353,9 @@
 #define VECTOR(type) \
     typedef struct Vector##type { \
         type* array; \
-        uint128 size;\
-        uint128 current_last; \
-        uint128 offset; \
+        uint64 size;\
+        uint64 current_last; \
+        uint64 offset; \
     } Vector##type;  \
     \
     static inline Vector##type* InitVector##type ( type data, size_t size ) { \
@@ -381,11 +379,6 @@
         }                          \
         ((Vector)->size)++; \
     }
-
-#define VectorPushAtIndex( Vector, index, data ) \
-    if ( (Vector) != NULL ) {                    \
-         \
-    }\
 
 #define VectorGet( Vector, index, type ) (type)((Vector)->array[index < 0 || index > ((Vector)->size) ? 0 : index]) \
 

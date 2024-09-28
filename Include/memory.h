@@ -5,7 +5,12 @@
 #ifndef MYCODEBASE_MEMORY_H
 #define MYCODEBASE_MEMORY_H
 
+#define MAX_HEAP_SIZE 64000
+#define MIN_HEAP_SIZE 8000
+
 #include "base.h"
+#include <sys/mman.h> /* for heap-like allocator */
+#include <unistd.h> /* for simple allocator */
 
 /*
  * TODO: Angel Castillo
