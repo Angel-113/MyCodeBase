@@ -19,12 +19,18 @@
         (s1) = (s2);
 
 typedef unsigned char byte;
-typedef unsigned int uint64;
-typedef unsigned short uint16;
+typedef unsigned long int uint64;
+typedef unsigned int uint32;
+typedef unsigned short int uint16;
 typedef unsigned char uint8;
 typedef char int8;
 typedef short int int16;
+typedef int int32;
 typedef long int int64;
+
+typedef long double flt128;
+typedef double flt64;
+typedef float flt32;
 
 typedef char* string;
 typedef void* object; /* ----> When using it as a pointer to any type or any struct */
